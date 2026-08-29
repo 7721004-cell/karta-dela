@@ -3,20 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <title>Карта дела</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            color: #222;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .case-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .case-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            margin-bottom: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .priority-high {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
+<div class="container">
+
     <h1>Карта дела</h1>
 
-    <h2>ООО «Альфа»</h2>
+    <div class="case-card">
+        <h2>ООО «Альфа»</h2>
 
-    <p><strong>Клиент:</strong> ООО «Альфа»</p>
-    <p><strong>Категория:</strong> Налоговый спор</p>
-    <p><strong>Стадия:</strong> Возражения на акт проверки</p>
-    <p><strong>Следующее действие:</strong> Подготовить письменную позицию</p>
-    <p><strong>Срок:</strong> 5 сентября 2026 года</p>
-    <p><strong>Приоритет:</strong> Высокий</p>
+        <div class="field">
+            <span class="label">Клиент:</span>
+            ООО «Альфа»
+        </div>
+
+        <div class="field">
+            <span class="label">Категория:</span>
+            Налоговый спор
+        </div>
+
+        <div class="field">
+            <span class="label">Стадия:</span>
+            Возражения на акт проверки
+        </div>
+
+        <div class="field">
+            <span class="label">Следующее действие:</span>
+            Подготовить письменную позицию
+        </div>
+
+        <div class="field">
+            <span class="label">Срок:</span>
+            5 сентября 2026 года
+        </div>
+
+        <div class="field">
+            <span class="label">Приоритет:</span>
+            <span class="priority-high">Высокий</span>
+        </div>
+    </div>
+
+    <div class="case-card">
+        <h2>ООО «Бета»</h2>
+
+        <div class="field">
+            <span class="label">Клиент:</span>
+            ООО «Бета»
+        </div>
+
+        <div class="field">
+            <span class="label">Категория:</span>
+            Банкротный спор
+        </div>
+
+        <div class="field">
+            <span class="label">Стадия:</span>
+            Рассмотрение заявления об оспаривании сделки
+        </div>
+
+        <div class="field">
+            <span class="label">Следующее действие:</span>
+            Подготовить отзыв и подборку судебной практики
+        </div>
+
+        <div class="field">
+            <span class="label">Срок:</span>
+            12 сентября 2026 года
+        </div>
+
+        <div class="field">
+            <span class="label">Приоритет:</span>
+            Средний
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>
