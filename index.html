@@ -18,11 +18,32 @@
             padding: 0 20px;
         }
 
-        h1 {
-            margin-bottom: 30px;
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
 
-        .case-card {
+        h1 {
+            margin: 0;
+        }
+
+        button {
+            cursor: pointer;
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+
+        .add-button {
+            background: #222;
+            color: white;
+        }
+
+        .case-card,
+        .case-form {
             background: white;
             border-radius: 12px;
             padding: 24px;
@@ -43,8 +64,36 @@
             font-weight: bold;
         }
 
-        .priority-high {
+        .case-form {
+            display: none;
+        }
+
+        .case-form.visible {
+            display: block;
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+        }
+
+        .form-row label {
+            display: block;
             font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-row input,
+        .form-row select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .save-button {
+            background: #222;
+            color: white;
         }
     </style>
 </head>
@@ -53,77 +102,239 @@
 
 <div class="container">
 
-    <h1>Карта дела</h1>
+    <div class="top-bar">
+        <h1>Карта дела</h1>
 
-    <div class="case-card">
-        <h2>ООО «Альфа»</h2>
-
-        <div class="field">
-            <span class="label">Клиент:</span>
-            ООО «Альфа»
-        </div>
-
-        <div class="field">
-            <span class="label">Категория:</span>
-            Налоговый спор
-        </div>
-
-        <div class="field">
-            <span class="label">Стадия:</span>
-            Возражения на акт проверки
-        </div>
-
-        <div class="field">
-            <span class="label">Следующее действие:</span>
-            Подготовить письменную позицию
-        </div>
-
-        <div class="field">
-            <span class="label">Срок:</span>
-            5 сентября 2026 года
-        </div>
-
-        <div class="field">
-            <span class="label">Приоритет:</span>
-            <span class="priority-high">Высокий</span>
-        </div>
+        <button class="add-button" id="showFormButton">
+            Добавить дело
+        </button>
     </div>
 
-    <div class="case-card">
-        <h2>ООО «Бета»</h2>
+    <div class="case-form" id="caseForm">
 
-        <div class="field">
-            <span class="label">Клиент:</span>
-            ООО «Бета»
+        <h2>Новое дело</h2>
+
+        <div class="form-row">
+            <label for="client">Клиент</label>
+            <input type="text" id="client">
         </div>
 
-        <div class="field">
-            <span class="label">Категория:</span>
-            Банкротный спор
+        <div class="form-row">
+            <label for="category">Категория</label>
+            <input type="text" id="category">
         </div>
 
-        <div class="field">
-            <span class="label">Стадия:</span>
-            Рассмотрение заявления об оспаривании сделки
+        <div class="form-row">
+            <label for="stage">Стадия</label>
+            <input type="text" id="stage">
         </div>
 
-        <div class="field">
-            <span class="label">Следующее действие:</span>
-            Подготовить отзыв и подборку судебной практики
+        <div class="form-row">
+            <label for="nextAction">Следующее действие</label>
+            <input type="text" id="nextAction">
         </div>
 
-        <div class="field">
-            <span class="label">Срок:</span>
-            12 сентября 2026 года
+        <div class="form-row">
+            <label for="deadline">Срок</label>
+            <input type="date" id="deadline">
         </div>
 
-        <div class="field">
-            <span class="label">Приоритет:</span>
-            Средний
+        <div class="form-row">
+            <label for="priority">Приоритет</label>
+
+            <select id="priority">
+                <option value="Высокий">Высокий</option>
+                <option value="Средний">Средний</option>
+                <option value="Низкий">Низкий</option>
+            </select>
         </div>
+
+        <button class="save-button" id="saveButton">
+            Сохранить
+        </button>
+
+    </div>
+
+    <div id="casesContainer">
+
+        <div class="case-card">
+            <h2>ООО «Альфа»</h2>
+
+            <div class="field">
+                <span class="label">Клиент:</span>
+                ООО «Альфа»
+            </div>
+
+            <div class="field">
+                <span class="label">Категория:</span>
+                Налоговый спор
+            </div>
+
+            <div class="field">
+                <span class="label">Стадия:</span>
+                Возражения на акт проверки
+            </div>
+
+            <div class="field">
+                <span class="label">Следующее действие:</span>
+                Подготовить письменную позицию
+            </div>
+
+            <div class="field">
+                <span class="label">Срок:</span>
+                5 сентября 2026 года
+            </div>
+
+            <div class="field">
+                <span class="label">Приоритет:</span>
+                Высокий
+            </div>
+        </div>
+
+        <div class="case-card">
+            <h2>ООО «Бета»</h2>
+
+            <div class="field">
+                <span class="label">Клиент:</span>
+                ООО «Бета»
+            </div>
+
+            <div class="field">
+                <span class="label">Категория:</span>
+                Банкротный спор
+            </div>
+
+            <div class="field">
+                <span class="label">Стадия:</span>
+                Рассмотрение заявления об оспаривании сделки
+            </div>
+
+            <div class="field">
+                <span class="label">Следующее действие:</span>
+                Подготовить отзыв и подборку судебной практики
+            </div>
+
+            <div class="field">
+                <span class="label">Срок:</span>
+                12 сентября 2026 года
+            </div>
+
+            <div class="field">
+                <span class="label">Приоритет:</span>
+                Средний
+            </div>
+        </div>
+
     </div>
 
 </div>
+
+<script>
+    const showFormButton = document.getElementById("showFormButton");
+    const caseForm = document.getElementById("caseForm");
+    const saveButton = document.getElementById("saveButton");
+    const casesContainer = document.getElementById("casesContainer");
+
+    let cases = JSON.parse(localStorage.getItem("cases")) || [];
+
+  function renderCases() {
+    const savedCards = document.querySelectorAll(".saved-case");
+    savedCards.forEach(card => card.remove());
+
+    cases.forEach((caseItem, index) => {
+        const card = document.createElement("div");
+        card.className = "case-card saved-case";
+
+        card.innerHTML = `
+            <h2>${caseItem.client}</h2>
+
+            <div class="field">
+                <span class="label">Клиент:</span>
+                ${caseItem.client}
+            </div>
+
+            <div class="field">
+                <span class="label">Категория:</span>
+                ${caseItem.category}
+            </div>
+
+            <div class="field">
+                <span class="label">Стадия:</span>
+                ${caseItem.stage}
+            </div>
+
+            <div class="field">
+                <span class="label">Следующее действие:</span>
+                ${caseItem.nextAction}
+            </div>
+
+            <div class="field">
+                <span class="label">Срок:</span>
+                ${caseItem.deadline}
+            </div>
+
+            <div class="field">
+                <span class="label">Приоритет:</span>
+                ${caseItem.priority}
+            </div>
+
+            <button onclick="deleteCase(${index})">
+                Удалить
+            </button>
+        `;
+
+        casesContainer.prepend(card);
+    });
+}function deleteCase(index) {
+    cases.splice(index, 1);
+
+    localStorage.setItem("cases", JSON.stringify(cases));
+
+    renderCases();
+}  showFormButton.addEventListener("click", function () {
+        caseForm.classList.toggle("visible");
+    });
+
+    saveButton.addEventListener("click", function () {
+        const client = document.getElementById("client").value;
+        const category = document.getElementById("category").value;
+        const stage = document.getElementById("stage").value;
+        const nextAction = document.getElementById("nextAction").value;
+        const deadline = document.getElementById("deadline").value;
+        const priority = document.getElementById("priority").value;
+
+        if (client.trim() === "") {
+            alert("Укажите клиента");
+            return;
+        }
+
+        const newCase = {
+            client,
+            category,
+            stage,
+            nextAction,
+            deadline,
+            priority
+        };
+
+        cases.push(newCase);
+
+        localStorage.setItem("cases", JSON.stringify(cases));
+
+        renderCases();
+
+        caseForm.classList.remove("visible");
+
+        document.getElementById("client").value = "";
+        document.getElementById("category").value = "";
+        document.getElementById("stage").value = "";
+        document.getElementById("nextAction").value = "";
+        document.getElementById("deadline").value = "";
+        document.getElementById("priority").value = "Высокий";
+    });
+
+    renderCases();
+</script>
 
 </body>
 </html>
