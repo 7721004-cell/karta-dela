@@ -235,67 +235,97 @@
     const saveButton = document.getElementById("saveButton");
     const casesContainer = document.getElementById("casesContainer");
 
-    let cases = JSON.parse(localStorage.getItem("cases")) || [];
+    let cases = [];
+    let editingCaseId = null;
 
-  function renderCases() {
-    const savedCards = document.querySelectorAll(".saved-case");
-    savedCards.forEach(card => card.remove());
+    async function loadCasesFromServer() {
+        const response = await fetch("/api/cases");
+        cases = await response.json();
 
-    cases.forEach((caseItem, index) => {
-        const card = document.createElement("div");
-        card.className = "case-card saved-case";
+        renderCases();
+    }
 
-        card.innerHTML = `
-            <h2>${caseItem.client}</h2>
+    async function deleteCase(id) {
+        await fetch(`/api/cases/${id}`, {
+            method: "DELETE"
+        });
 
-            <div class="field">
-                <span class="label">Клиент:</span>
-                ${caseItem.client}
-            </div>
+        await loadCasesFromServer();
+    }
+function editCase(id) {
+    const caseItem = cases.find(item => item.id === id);
 
-            <div class="field">
-                <span class="label">Категория:</span>
-                ${caseItem.category}
-            </div>
+    if (!caseItem) {
+        return;
+    }
 
-            <div class="field">
-                <span class="label">Стадия:</span>
-                ${caseItem.stage}
-            </div>
+    editingCaseId = id;
 
-            <div class="field">
-                <span class="label">Следующее действие:</span>
-                ${caseItem.nextAction}
-            </div>
+    document.getElementById("client").value = caseItem.client;
+    document.getElementById("category").value = caseItem.category;
+    document.getElementById("stage").value = caseItem.stage;
+    document.getElementById("nextAction").value = caseItem.next_action;
+    document.getElementById("deadline").value = caseItem.deadline;
+    document.getElementById("priority").value = caseItem.priority;
 
-            <div class="field">
-                <span class="label">Срок:</span>
-                ${caseItem.deadline}
-            </div>
+    caseForm.classList.add("visible");
+}
+    function renderCases() {
+        casesContainer.innerHTML = "";
 
-            <div class="field">
-                <span class="label">Приоритет:</span>
-                ${caseItem.priority}
-            </div>
+        cases.forEach((caseItem) => {
+            const card = document.createElement("div");
+            card.className = "case-card";
 
-            <button onclick="deleteCase(${index})">
-                Удалить
-            </button>
-        `;
+            card.innerHTML = `
+                <h2>${caseItem.client}</h2>
 
-        casesContainer.prepend(card);
-    });
-}function deleteCase(index) {
-    cases.splice(index, 1);
+                <div class="field">
+                    <span class="label">Клиент:</span>
+                    ${caseItem.client}
+                </div>
 
-    localStorage.setItem("cases", JSON.stringify(cases));
+                <div class="field">
+                    <span class="label">Категория:</span>
+                    ${caseItem.category}
+                </div>
 
-    renderCases();
-}  showFormButton.addEventListener("click", function () {
+                <div class="field">
+                    <span class="label">Стадия:</span>
+                    ${caseItem.stage}
+                </div>
+
+                <div class="field">
+                    <span class="label">Следующее действие:</span>
+                    ${caseItem.next_action}
+                </div>
+
+                <div class="field">
+                    <span class="label">Срок:</span>
+                    ${caseItem.deadline}
+                </div>
+
+                <div class="field">
+                    <span class="label">Приоритет:</span>
+                    ${caseItem.priority}
+                </div>
+
+<button onclick="editCase(${caseItem.id})">
+    Редактировать
+</button>                <button onclick="deleteCase(${caseItem.id})">
+                    Удалить
+                </button>
+            `;
+
+            casesContainer.appendChild(card);
+        });
+    }
+
+    showFormButton.addEventListener("click", function () {
         caseForm.classList.toggle("visible");
     });
 
-    saveButton.addEventListener("click", function () {
+    saveButton.addEventListener("click", async function () {
         const client = document.getElementById("client").value;
         const category = document.getElementById("category").value;
         const stage = document.getElementById("stage").value;
@@ -309,19 +339,33 @@
         }
 
         const newCase = {
-            client,
-            category,
-            stage,
-            nextAction,
-            deadline,
-            priority
+            client: client,
+            category: category,
+            stage: stage,
+            next_action: nextAction,
+            deadline: deadline,
+            priority: priority
         };
 
-        cases.push(newCase);
+if (editingCaseId === null) {
+    await fetch("/api/cases", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newCase)
+    });
+} else {
+    await fetch(`/api/cases/${editingCaseId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newCase)
+    });
 
-        localStorage.setItem("cases", JSON.stringify(cases));
-
-        renderCases();
+    editingCaseId = null;
+}
 
         caseForm.classList.remove("visible");
 
@@ -331,9 +375,11 @@
         document.getElementById("nextAction").value = "";
         document.getElementById("deadline").value = "";
         document.getElementById("priority").value = "Высокий";
+
+        await loadCasesFromServer();
     });
 
-    renderCases();
+    loadCasesFromServer();
 </script>
 
 </body>
