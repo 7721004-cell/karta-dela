@@ -1,3 +1,6 @@
 .idea/
 .venv/
 cases.db
+cases_backup.db
+cases.json
+.env

@@ -95,7 +95,36 @@
             background: #222;
             color: white;
         }
-    </style>
+    /* ===== KANBAN ===== */
+
+.container {
+    max-width: 1600px;
+}
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(240px, 1fr));
+    gap: 16px;
+    align-items: start;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+.kanban-column {
+    background: #e9e9e9;
+    border-radius: 12px;
+    padding: 14px;
+    min-height: 500px;
+}
+
+.kanban-column > h2 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+}
+
+.kanban-column .case-card {
+    margin-bottom: 12px;
+}</style>
 </head>
 
 <body>
@@ -155,78 +184,34 @@
 
     </div>
 
-    <div id="casesContainer">
+<div class="kanban-board">
 
-        <div class="case-card">
-            <h2>ООО «Альфа»</h2>
-
-            <div class="field">
-                <span class="label">Клиент:</span>
-                ООО «Альфа»
-            </div>
-
-            <div class="field">
-                <span class="label">Категория:</span>
-                Налоговый спор
-            </div>
-
-            <div class="field">
-                <span class="label">Стадия:</span>
-                Возражения на акт проверки
-            </div>
-
-            <div class="field">
-                <span class="label">Следующее действие:</span>
-                Подготовить письменную позицию
-            </div>
-
-            <div class="field">
-                <span class="label">Срок:</span>
-                5 сентября 2026 года
-            </div>
-
-            <div class="field">
-                <span class="label">Приоритет:</span>
-                Высокий
-            </div>
-        </div>
-
-        <div class="case-card">
-            <h2>ООО «Бета»</h2>
-
-            <div class="field">
-                <span class="label">Клиент:</span>
-                ООО «Бета»
-            </div>
-
-            <div class="field">
-                <span class="label">Категория:</span>
-                Банкротный спор
-            </div>
-
-            <div class="field">
-                <span class="label">Стадия:</span>
-                Рассмотрение заявления об оспаривании сделки
-            </div>
-
-            <div class="field">
-                <span class="label">Следующее действие:</span>
-                Подготовить отзыв и подборку судебной практики
-            </div>
-
-            <div class="field">
-                <span class="label">Срок:</span>
-                12 сентября 2026 года
-            </div>
-
-            <div class="field">
-                <span class="label">Приоритет:</span>
-                Средний
-            </div>
-        </div>
-
+    <div class="kanban-column">
+        <h2>Входящие</h2>
+        <div id="casesContainer"></div>
     </div>
 
+    <div class="kanban-column">
+        <h2>На этой неделе</h2>
+        <div id="weekContainer"></div>
+    </div>
+
+    <div class="kanban-column">
+        <h2>В работе</h2>
+        <div id="workContainer"></div>
+    </div>
+
+    <div class="kanban-column">
+        <h2>Ожидаю / делегировано</h2>
+        <div id="waitingContainer"></div>
+    </div>
+
+    <div class="kanban-column">
+        <h2>Готово</h2>
+        <div id="doneContainer"></div>
+    </div>
+
+</div>
 </div>
 
 <script>

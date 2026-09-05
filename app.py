@@ -25,13 +25,29 @@ def init_db():
             stage TEXT,
             next_action TEXT,
             deadline TEXT,
-            priority TEXT
+            priority TEXT,
+            status TEXT DEFAULT 'Входящие'
         )
+    """)
+
+    columns = [
+        row["name"]
+        for row in connection.execute("PRAGMA table_info(cases)").fetchall()
+    ]
+
+    if "status" not in columns:
+        connection.execute(
+            "ALTER TABLE cases ADD COLUMN status TEXT DEFAULT 'Входящие'"
+        )
+
+    connection.execute("""
+        UPDATE cases
+        SET status = 'Входящие'
+        WHERE status IS NULL OR status = ''
     """)
 
     connection.commit()
     connection.close()
-
 
 @app.route("/")
 def home():
