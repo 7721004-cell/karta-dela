@@ -80,9 +80,10 @@ def cases_api():
             stage,
             next_action,
             deadline,
-            priority
+            priority,
+            status
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
         (
             new_case.get("client"),
@@ -90,7 +91,8 @@ def cases_api():
             new_case.get("stage"),
             new_case.get("next_action"),
             new_case.get("deadline"),
-            new_case.get("priority")
+            new_case.get("priority"),
+            new_case.get("status")
         )
     )
 
@@ -130,7 +132,8 @@ def update_case(case_id):
             stage = ?,
             next_action = ?,
             deadline = ?,
-            priority = ?
+            priority = ?,
+            status = ?
         WHERE id = ?
         """,
         (
@@ -140,6 +143,7 @@ def update_case(case_id):
             updated_case.get("next_action"),
             updated_case.get("deadline"),
             updated_case.get("priority"),
+            updated_case.get("status"),
             case_id
         )
     )

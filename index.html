@@ -177,7 +177,17 @@
                 <option value="Низкий">Низкий</option>
             </select>
         </div>
+<div class="form-row">
+    <label for="status">Рабочий статус:</label>
 
+    <select id="status">
+        <option value="Входящие">Входящие</option>
+        <option value="На этой неделе">На этой неделе</option>
+        <option value="В работе">В работе</option>
+        <option value="Ожидаю / делегировано">Ожидаю / делегировано</option>
+        <option value="Готово">Готово</option>
+    </select>
+</div>
         <button class="save-button" id="saveButton">
             Сохранить
         </button>
@@ -252,11 +262,15 @@ function editCase(id) {
     document.getElementById("nextAction").value = caseItem.next_action;
     document.getElementById("deadline").value = caseItem.deadline;
     document.getElementById("priority").value = caseItem.priority;
-
+document.getElementById("status").value = caseItem.status;
     caseForm.classList.add("visible");
 }
     function renderCases() {
         casesContainer.innerHTML = "";
+        document.getElementById("weekContainer").innerHTML = "";
+document.getElementById("workContainer").innerHTML = "";
+document.getElementById("waitingContainer").innerHTML = "";
+document.getElementById("doneContainer").innerHTML = "";
 
         cases.forEach((caseItem) => {
             const card = document.createElement("div");
@@ -302,7 +316,16 @@ function editCase(id) {
                 </button>
             `;
 
-            casesContainer.appendChild(card);
+          const containerByStatus = {
+    "Входящие": casesContainer,
+    "На этой неделе": document.getElementById("weekContainer"),
+    "В работе": document.getElementById("workContainer"),
+    "Ожидаю / делегировано": document.getElementById("waitingContainer"),
+    "Готово": document.getElementById("doneContainer")
+};
+
+const targetContainer = containerByStatus[caseItem.status] || casesContainer;
+targetContainer.appendChild(card); 
         });
     }
 
@@ -317,7 +340,7 @@ function editCase(id) {
         const nextAction = document.getElementById("nextAction").value;
         const deadline = document.getElementById("deadline").value;
         const priority = document.getElementById("priority").value;
-
+const status = document.getElementById("status").value;
         if (client.trim() === "") {
             alert("Укажите клиента");
             return;
@@ -329,7 +352,8 @@ function editCase(id) {
             stage: stage,
             next_action: nextAction,
             deadline: deadline,
-            priority: priority
+            priority: priority,
+            status: status
         };
 
 if (editingCaseId === null) {
