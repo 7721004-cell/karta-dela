@@ -265,6 +265,28 @@ function editCase(id) {
 document.getElementById("status").value = caseItem.status;
     caseForm.classList.add("visible");
 }
+   async function moveCaseStatus(id, newStatus) {
+    const caseItem = cases.find(item => item.id === id);
+
+    if (!caseItem) {
+        return;
+    }
+
+    const updatedCase = {
+        ...caseItem,
+        status: newStatus
+    };
+
+    await fetch(`/api/cases/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedCase)
+    });
+
+    await loadCasesFromServer();
+} 
     function renderCases() {
         casesContainer.innerHTML = "";
         document.getElementById("weekContainer").innerHTML = "";
@@ -308,14 +330,24 @@ document.getElementById("doneContainer").innerHTML = "";
                     <span class="label">Приоритет:</span>
                     ${caseItem.priority}
                 </div>
+<div class="field">
+    <span class="label">Переместить:</span>
 
+    <select id="moveStatus-${caseItem.id}" onchange="moveCaseStatus(${caseItem.id}, this.value)">
+        <option value="Входящие">Входящие</option>
+        <option value="На этой неделе">На этой неделе</option>
+        <option value="В работе">В работе</option>
+        <option value="Ожидаю / делегировано">Ожидаю / делегировано</option>
+        <option value="Готово">Готово</option>
+    </select>
+</div>
 <button onclick="editCase(${caseItem.id})">
     Редактировать
 </button>                <button onclick="deleteCase(${caseItem.id})">
                     Удалить
                 </button>
             `;
-
+card.querySelector(`#moveStatus-${caseItem.id}`).value = caseItem.status || "Входящие";
           const containerByStatus = {
     "Входящие": casesContainer,
     "На этой неделе": document.getElementById("weekContainer"),
