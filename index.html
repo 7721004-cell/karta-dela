@@ -188,6 +188,13 @@
         <option value="Готово">Готово</option>
     </select>
 </div>
+<div class="form-row">
+    <label for="project">Проект:</label>
+
+    <select id="project">
+        <option value="">Без проекта</option>
+    </select>
+</div>
         <button class="save-button" id="saveButton">
             Сохранить
         </button>
@@ -231,6 +238,7 @@
     const casesContainer = document.getElementById("casesContainer");
 
     let cases = [];
+    let projects = [];
     let editingCaseId = null;
 
     async function loadCasesFromServer() {
@@ -239,7 +247,21 @@
 
         renderCases();
     }
+async function loadProjectsFromServer() {
+    const response = await fetch("/api/projects");
+    projects = await response.json();
 
+    const projectSelect = document.getElementById("project");
+
+    projectSelect.innerHTML = '<option value="">Без проекта</option>';
+
+    projects.forEach((project) => {
+        const option = document.createElement("option");
+        option.value = project.id;
+        option.textContent = project.name;
+        projectSelect.appendChild(option);
+    });
+}
     async function deleteCase(id) {
         await fetch(`/api/cases/${id}`, {
             method: "DELETE"
@@ -262,7 +284,8 @@ function editCase(id) {
     document.getElementById("nextAction").value = caseItem.next_action;
     document.getElementById("deadline").value = caseItem.deadline;
     document.getElementById("priority").value = caseItem.priority;
-document.getElementById("status").value = caseItem.status;
+    document.getElementById("status").value = caseItem.status;
+    document.getElementById("project").value = caseItem.project_id ?? "";
     caseForm.classList.add("visible");
 }
    async function moveCaseStatus(id, newStatus) {
@@ -373,6 +396,8 @@ targetContainer.appendChild(card);
         const deadline = document.getElementById("deadline").value;
         const priority = document.getElementById("priority").value;
 const status = document.getElementById("status").value;
+const projectValue = document.getElementById("project").value;
+const projectId = projectValue === "" ? null : Number(projectValue);
         if (client.trim() === "") {
             alert("Укажите клиента");
             return;
@@ -385,7 +410,8 @@ const status = document.getElementById("status").value;
             next_action: nextAction,
             deadline: deadline,
             priority: priority,
-            status: status
+            status: status,
+            project_id: projectId
         };
 
 if (editingCaseId === null) {
@@ -421,6 +447,7 @@ if (editingCaseId === null) {
     });
 
     loadCasesFromServer();
+    loadProjectsFromServer();
 </script>
 
 </body>

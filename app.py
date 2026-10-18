@@ -26,10 +26,18 @@ def init_db():
             next_action TEXT,
             deadline TEXT,
             priority TEXT,
-            status TEXT DEFAULT 'Входящие'
+            status TEXT DEFAULT 'Входящие',
+            project_id INTEGER  
         )
     """)
-
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS projects (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            client TEXT,
+            project_type TEXT
+        )
+    """)
     columns = [
         row["name"]
         for row in connection.execute("PRAGMA table_info(cases)").fetchall()
@@ -39,7 +47,10 @@ def init_db():
         connection.execute(
             "ALTER TABLE cases ADD COLUMN status TEXT DEFAULT 'Входящие'"
         )
-
+    if "project_id" not in columns:
+        connection.execute(
+            "ALTER TABLE cases ADD COLUMN project_id INTEGER"
+        )
     connection.execute("""
         UPDATE cases
         SET status = 'Входящие'
@@ -52,7 +63,17 @@ def init_db():
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
+@app.route("/api/projects", methods=["GET"])
+def projects_api():
+    connection = get_connection()
 
+    rows = connection.execute(
+        "SELECT * FROM projects ORDER BY id"
+    ).fetchall()
+
+    connection.close()
+
+    return jsonify([dict(row) for row in rows])
 
 @app.route("/api/cases", methods=["GET", "POST"])
 def cases_api():
@@ -73,28 +94,30 @@ def cases_api():
     connection = get_connection()
 
     cursor = connection.execute(
-        """
-        INSERT INTO cases (
-            client,
-            category,
-            stage,
-            next_action,
-            deadline,
-            priority,
-            status
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            new_case.get("client"),
-            new_case.get("category"),
-            new_case.get("stage"),
-            new_case.get("next_action"),
-            new_case.get("deadline"),
-            new_case.get("priority"),
-            new_case.get("status")
-        )
+    """
+    INSERT INTO cases (
+        client,
+        category,
+        stage,
+        next_action,
+        deadline,
+        priority,
+        status,
+        project_id
     )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """,
+    (
+        new_case.get("client"),
+        new_case.get("category"),
+        new_case.get("stage"),
+        new_case.get("next_action"),
+        new_case.get("deadline"),
+        new_case.get("priority"),
+        new_case.get("status"),
+        new_case.get("project_id")
+    )
+)
 
     connection.commit()
 
@@ -133,8 +156,9 @@ def update_case(case_id):
             next_action = ?,
             deadline = ?,
             priority = ?,
-            status = ?
-        WHERE id = ?
+            status = ?,
+            project_id = ?
+            WHERE id = ?
         """,
         (
             updated_case.get("client"),
@@ -144,6 +168,7 @@ def update_case(case_id):
             updated_case.get("deadline"),
             updated_case.get("priority"),
             updated_case.get("status"),
+            updated_case.get("project_id"),
             case_id
         )
     )
